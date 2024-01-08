@@ -17,4 +17,7 @@ export const userSvc = {
       return null;
     }
   },
+  userUpdateById: async (id: string, data: any) => {
+    await db.user.update({ where: { id }, data: { ...data } });
+  },
 };

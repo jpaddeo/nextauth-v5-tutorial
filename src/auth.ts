@@ -16,9 +16,13 @@ export const {
   adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
   callbacks: {
-    async signIn({ user }) {
-      // const existingUser = await userSvc.userById(user.id);
-      // if (!existingUser || !existingUser?.emailVerified || !existingUser.active) return false;
+    async signIn({ user, account }) {
+      if (account?.provider !== 'credentials') return true;
+
+      const existingUser = await userSvc.userById(user.id);
+      if (!existingUser || !existingUser?.emailVerified) return false;
+
+      // TODO:: Add 2FA check
       return true;
     },
     async jwt({ token }) {
@@ -38,6 +42,16 @@ export const {
         session.user.role = token.role as UserRole;
       }
       return session;
+    },
+  },
+  pages: {
+    signIn: '/auth/login',
+    error: '/auth/error',
+  },
+  events: {
+    async linkAccount({ user }) {
+      // para OAuth providers verificamos automáticamente basado en la verficación de cada uno
+      await userSvc.userUpdateById(user.id, { emailVerified: new Date() });
     },
   },
   ...authConfig,

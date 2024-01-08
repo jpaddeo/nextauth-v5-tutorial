@@ -1,5 +1,5 @@
-const publicRoutes = ['/'];
-const authRoutes = ['/auth/login', '/auth/register'];
+const publicRoutes = ['/', '/auth/verify-token'];
+const authRoutes = ['/auth/login', '/auth/register', '/auth/error'];
 const apiAuthPrefix = '/api/auth';
 const DEFAULT_LOGIN_REDIRECT = '/settings';
 

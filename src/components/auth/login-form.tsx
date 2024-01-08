@@ -25,6 +25,7 @@ import FormSuccess from '@/components/ui/form-success';
 
 import CardWrapper from '@/components/auth/card-wrapper';
 import { login } from '@/actions/login';
+import { useSearchParams } from 'next/navigation';
 
 type LoginForm = {};
 
@@ -32,6 +33,12 @@ export default function LoginForm({}: LoginForm) {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>('');
   const [successMessage, setSuccessMessage] = useState<string | undefined>('');
+
+  const searchParams = useSearchParams();
+  const paramsError =
+    searchParams.get('error') === 'OAuthAccountNotLinked'
+      ? 'Email already in use with different provider!'
+      : '';
 
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -52,8 +59,8 @@ export default function LoginForm({}: LoginForm) {
 
     startTransition(() => {
       login(data).then((response) => {
-        setErrorMessage(response.error);
-        setSuccessMessage(response.success);
+        setErrorMessage(response?.error);
+        setSuccessMessage(response?.success);
       });
     });
   };
@@ -119,7 +126,7 @@ export default function LoginForm({}: LoginForm) {
             />
           </div>
           <FormSuccess message={successMessage} />
-          <FormError message={errorMessage} />
+          <FormError message={errorMessage || paramsError} />
           <Button type='submit' className='w-full' disabled={isPending}>
             Login
           </Button>

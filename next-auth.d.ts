@@ -11,3 +11,10 @@ declare module 'next-auth' {
     user: ExtendedUser;
   }
 }
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    // idToken?: string;
+    role: UserRole;
+  }
+}
