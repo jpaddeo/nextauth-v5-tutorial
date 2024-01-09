@@ -26,10 +26,11 @@ import FormSuccess from '@/components/ui/form-success';
 import CardWrapper from '@/components/auth/card-wrapper';
 import { login } from '@/actions/login';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
-type LoginForm = {};
+type LoginFormProps = {};
 
-export default function LoginForm({}: LoginForm) {
+export default function LoginForm({}: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>('');
   const [successMessage, setSuccessMessage] = useState<string | undefined>('');
@@ -120,6 +121,11 @@ export default function LoginForm({}: LoginForm) {
                       )}
                     </div>
                   </FormControl>
+                  <Link href='/auth/forgot-password'>
+                    <span className='text-sm text-gray-500 hover:underline'>
+                      Forgot password?
+                    </span>
+                  </Link>
                   <FormMessage />
                 </FormItem>
               )}

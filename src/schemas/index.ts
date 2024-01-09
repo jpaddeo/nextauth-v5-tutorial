@@ -27,4 +27,9 @@ const RegisterSchema = z
     path: ['password_confirmation'],
   });
 
-export { LoginSchema, RegisterSchema };
+const ResetSchema = z.object({
+  email: z.string().email({
+    message: 'Email is required',
+  }),
+});
+export { LoginSchema, RegisterSchema, ResetSchema };
