@@ -43,6 +43,7 @@ export const {
       if (!existingUser) return token;
 
       token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       return token;
     },
     async session({ token, session }) {
@@ -51,6 +52,9 @@ export const {
       }
       if (token.role && session.user) {
         session.user.role = token.role as UserRole;
+      }
+      if (token.isTwoFactorEnabled && session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
       }
       return session;
     },

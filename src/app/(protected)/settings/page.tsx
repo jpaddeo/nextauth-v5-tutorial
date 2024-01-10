@@ -1,25 +1,27 @@
-import { auth, signOut } from '@/auth';
+'use client';
+
+import { logout } from '@/actions/logout';
+
+import { useCurrentUser } from '@/hooks/use-current-user';
+
 import { Button } from '@/components/ui/button';
 
 type SettingsPageProps = {};
 
-export default async function SettingsPage({}: SettingsPageProps) {
-  const session = await auth();
+export default function SettingsPage({}: SettingsPageProps) {
+  const user = useCurrentUser();
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
-    <div>
-      <h1>Settings</h1>
-      <p>Logged in as {JSON.stringify(session)}</p>
-      <form
-        action={async () => {
-          'use server';
-          await signOut();
-        }}
-      >
+    <section>
+      <form action={handleLogout}>
         <Button type='submit' variant='outline'>
           Sign out
         </Button>
       </form>
-    </div>
+    </section>
   );
 }
