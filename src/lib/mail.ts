@@ -40,6 +40,6 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     from: 'onboarding@resend.dev',
     to: email,
     subject: '[FlaGo Zone] - New 2FA Token',
-    html: `<p>Your 2FA token is: <strong>"${token}"></strong>`,
+    html: `<p>Your 2FA token is: <strong>${token}</strong>`,
   });
 };

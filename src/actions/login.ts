@@ -68,10 +68,9 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
         existingUser.id
       );
     } else {
-      const twoFactorToken =
-        await verificationTokenSvc.generateVerificationToken(
-          existingUser.email
-        );
+      const twoFactorToken = await twoFactorTokenSvc.generateTwoFactorToken(
+        existingUser.email
+      );
       await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
       return { twoFactor: true };
     }
