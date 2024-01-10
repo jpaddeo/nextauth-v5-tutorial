@@ -4,6 +4,7 @@ import { PrismaClient, UserRole } from '@prisma/client';
 
 import authConfig from '@/auth.config';
 import { userSvc } from '@/services/user';
+import { twoFactorConfirmationSvc } from './services/two-factor-confirmation';
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,17 @@ export const {
       const existingUser = await userSvc.userById(user.id);
       if (!existingUser || !existingUser?.emailVerified) return false;
 
-      // TODO:: Add 2FA check
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation =
+          await twoFactorConfirmationSvc.twoFactorConfirmationByUserId(
+            existingUser.id
+          );
+        if (!twoFactorConfirmation) return false;
+
+        await twoFactorConfirmationSvc.deleteTwoFactorConfirmationById(
+          twoFactorConfirmation.id
+        );
+      }
       return true;
     },
     async jwt({ token }) {

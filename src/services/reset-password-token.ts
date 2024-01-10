@@ -28,7 +28,7 @@ export const resetPasswordTokenSvc = {
   },
   createResetPasswordTokenEmail: async (email: string) => {
     const token = randomUUID();
-    const expires = new Date(new Date().getTime() + 3600 * 1000);
+    const expires = new Date(new Date().getTime() + 30 * 60 * 1000);  // 30 minutes
     const resetPasswordToken = await db.passwordResetToken.create({
       data: {
         token,

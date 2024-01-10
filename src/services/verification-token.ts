@@ -28,7 +28,7 @@ export const verificationTokenSvc = {
   },
   createVerificationTokenEmail: async (email: string) => {
     const token = randomUUID();
-    const expires = new Date(new Date().getTime() + 3600 * 1000);
+    const expires = new Date(new Date().getTime() + 30 * 60 * 1000); // 30 minutes
     const verificationToken = await db.verificationToken.create({
       data: {
         token,
