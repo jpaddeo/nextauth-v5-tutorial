@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { ResetSchema } from '@/schemas';
 
-import { reset } from '@/actions/reset';
+import { resetLink } from '@/actions/reset-link';
 
 import {
   Form,
@@ -44,7 +44,7 @@ export default function ResetForm({}: ResetFormProps) {
     setSuccessMessage('');
 
     startTransition(() => {
-      reset(data).then((response) => {
+      resetLink(data).then((response) => {
         setErrorMessage(response?.error);
         setSuccessMessage(response?.success);
       });

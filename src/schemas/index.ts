@@ -32,4 +32,17 @@ const ResetSchema = z.object({
     message: 'Email is required',
   }),
 });
-export { LoginSchema, RegisterSchema, ResetSchema };
+
+const NewPasswordSchema = z
+  .object({
+    password: z.string().min(6, {
+      message: 'Password is required and it must be at least 6 characters',
+    }),
+    password_confirmation: z.string(),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: 'Passwords must match',
+    path: ['password_confirmation'],
+  });
+
+export { LoginSchema, RegisterSchema, ResetSchema, NewPasswordSchema };
