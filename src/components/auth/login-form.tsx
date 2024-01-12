@@ -37,6 +37,7 @@ export default function LoginForm({}: LoginFormProps) {
   const [showTwoFactor, setShowTwoFactor] = useState(false);
 
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const paramsError =
     searchParams.get('error') === 'OAuthAccountNotLinked'
       ? 'Email already in use with different provider!'
@@ -60,7 +61,7 @@ export default function LoginForm({}: LoginFormProps) {
     setSuccessMessage('');
 
     startTransition(() => {
-      login(data)
+      login(data, callbackUrl)
         .then((response) => {
           if (response?.error) {
             form.reset();

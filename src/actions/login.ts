@@ -16,7 +16,10 @@ import {
 import { twoFactorTokenSvc } from '@/services/two-factor-token';
 import { twoFactorConfirmationSvc } from '@/services/two-factor-confirmation';
 
-export const login = async (data: z.infer<typeof LoginSchema>) => {
+export const login = async (
+  data: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null
+) => {
   const validateData = LoginSchema.safeParse(data);
 
   if (!validateData.success) {
@@ -80,7 +83,7 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
     await signIn('credentials', {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
     if (error instanceof AuthError) {

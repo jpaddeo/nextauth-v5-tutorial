@@ -7,12 +7,15 @@ import { signIn } from 'next-auth/react'; // client side function
 
 import { Button } from '@/components/ui/button';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
+import { useSearchParams } from 'next/navigation';
 
 type SocialProps = {};
 
 export default function Social({}: SocialProps) {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || DEFAULT_LOGIN_REDIRECT;
   const handleOnClick = (provider: 'google' | 'github') => {
-    signIn(provider, { callbackUrl: DEFAULT_LOGIN_REDIRECT });
+    signIn(provider, { callbackUrl });
   };
 
   return (
