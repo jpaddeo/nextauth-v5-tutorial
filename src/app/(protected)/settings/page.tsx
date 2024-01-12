@@ -63,6 +63,8 @@ export default function SettingsPage({}: SettingsPageProps) {
   });
 
   const onClick = (values: z.infer<typeof SettingsSchema>) => {
+    setErrorMessage('');
+    setSuccessMessage('');
     startTransition(() => {
       settings(values)
         .then((response) => {

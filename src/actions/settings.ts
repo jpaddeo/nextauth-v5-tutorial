@@ -1,12 +1,16 @@
 'use server';
 
 import * as z from 'zod';
+import bcrypt, { hash } from 'bcryptjs';
 
 import { SettingsSchema } from '@/schemas';
 
 import { db } from '@/lib/db';
 import { userSvc } from '@/services/user';
 import { currentUser } from '@/lib/auth';
+import { verificationTokenSvc } from '@/services/verification-token';
+import { sendVerificationTokenEmail } from '@/lib/mail';
+import { getRandomValues } from 'crypto';
 
 export const settings = async (data: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
@@ -22,8 +26,31 @@ export const settings = async (data: z.infer<typeof SettingsSchema>) => {
     data.isTwoFactorEnabled = undefined;
   }
 
-  if(data.email && data.email !== dbUser.email) {
-    
+  if (data.email && data.email !== dbUser.email) {
+    const existingUserWithEmail = await userSvc.userByEmail(data.email);
+    if (existingUserWithEmail && existingUserWithEmail.id !== user.id)
+      return { error: 'Email already in use' };
+
+    const verificationToken =
+      await verificationTokenSvc.generateVerificationToken(data.email);
+
+    await sendVerificationTokenEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
+    return { success: 'Verificaiton email sent!' };
+  }
+
+  if (data.password && data.newPassword && dbUser.password) {
+    const passwordMatches = await bcrypt.compare(
+      data.password,
+      dbUser.password
+    );
+    if (!passwordMatches) return { error: 'Invalid password' };
+
+    const hashesNewPassword = await bcrypt.hash(data.newPassword, 10);
+    data.password = hashesNewPassword;
+    data.newPassword = undefined;
   }
 
   const validData = SettingsSchema.safeParse(data);
