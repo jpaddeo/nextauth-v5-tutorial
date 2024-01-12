@@ -43,6 +43,8 @@ export const {
       if (!existingUser) return token;
 
       token.role = existingUser.role;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       return token;
     },
@@ -55,6 +57,10 @@ export const {
       }
       if (token.isTwoFactorEnabled && session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      }
+      if (session.user) {
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
       }
       return session;
     },

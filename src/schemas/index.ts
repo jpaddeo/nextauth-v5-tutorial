@@ -46,4 +46,16 @@ const NewPasswordSchema = z
     path: ['password_confirmation'],
   });
 
-export { LoginSchema, RegisterSchema, ResetSchema, NewPasswordSchema };
+const SettingsSchema = z.object({
+  name: z.string().min(1, {
+    message: 'Name is required',
+  }),
+});
+
+export {
+  LoginSchema,
+  RegisterSchema,
+  ResetSchema,
+  NewPasswordSchema,
+  SettingsSchema,
+};

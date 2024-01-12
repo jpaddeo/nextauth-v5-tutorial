@@ -1,27 +1,41 @@
 'use client';
 
-import { logout } from '@/actions/logout';
-
-import { useCurrentUser } from '@/hooks/use-current-user';
-
+import { settings } from '@/actions/settings';
 import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardContent,
+} from '@/components/ui/card';
+import { useSession } from 'next-auth/react';
+import { useTransition } from 'react';
 
 type SettingsPageProps = {};
 
 export default function SettingsPage({}: SettingsPageProps) {
-  const user = useCurrentUser();
+  const { update: updateSession } = useSession();
+  const [isPending, startTransition] = useTransition();
 
-  const handleLogout = async () => {
-    await logout();
+  const handleUpdateClick = () => {
+    startTransition(() => {
+      settings({
+        name: 'PC Service ABT',
+      }).then(() => {
+        updateSession();
+      });
+    });
   };
-
   return (
-    <section>
-      <form action={handleLogout}>
-        <Button type='submit' variant='outline'>
-          Sign out
+    <Card className='w-[600px]'>
+      <CardHeader>
+        <p className='text-2xl text-center font-bold'>🧵 Settings</p>
+      </CardHeader>
+      <CardContent>
+        <Button disabled={isPending} onClick={handleUpdateClick}>
+          Update
         </Button>
-      </form>
-    </section>
+      </CardContent>
+    </Card>
   );
 }
