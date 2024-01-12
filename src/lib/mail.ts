@@ -1,14 +1,14 @@
-import email from 'next-auth/providers/email';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
 export const sendVerificationTokenEmail = async (
   email: string,
   token: string
 ) => {
   const confirmationLink = `${
-    process.env.APP_URL || 'http://localhost:3000'
+    appUrl || 'http://localhost:3000'
   }/auth/verify-token?token=${token}`;
 
   await resend.emails.send({
@@ -24,7 +24,7 @@ export const sendResetPasswordTokenEmail = async (
   token: string
 ) => {
   const resetLink = `${
-    process.env.APP_URL || 'http://localhost:3000'
+    appUrl || 'http://localhost:3000'
   }/auth/reset?token=${token}`;
 
   await resend.emails.send({
