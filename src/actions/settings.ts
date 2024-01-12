@@ -15,6 +15,17 @@ export const settings = async (data: z.infer<typeof SettingsSchema>) => {
   const dbUser = await userSvc.userById(user.id);
   if (!dbUser) return { error: 'Unauthorized' };
 
+  if (user.isOAuth) {
+    data.email = undefined;
+    data.password = undefined;
+    data.newPassword = undefined;
+    data.isTwoFactorEnabled = undefined;
+  }
+
+  if(data.email && data.email !== dbUser.email) {
+    
+  }
+
   const validData = SettingsSchema.safeParse(data);
   if (!validData.success) return { error: 'Invalid fields and data' };
 
@@ -26,4 +37,5 @@ export const settings = async (data: z.infer<typeof SettingsSchema>) => {
       ...validData.data,
     },
   });
+  return { success: 'Settings updated' };
 };

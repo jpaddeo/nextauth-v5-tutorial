@@ -4,7 +4,8 @@ import { PrismaClient, UserRole } from '@prisma/client';
 
 import authConfig from '@/auth.config';
 import { userSvc } from '@/services/user';
-import { twoFactorConfirmationSvc } from './services/two-factor-confirmation';
+import { twoFactorConfirmationSvc } from '@/services/two-factor-confirmation';
+import { accountSvc } from '@/services/account';
 
 const prisma = new PrismaClient();
 
@@ -42,6 +43,9 @@ export const {
       const existingUser = await userSvc.userById(token.sub);
       if (!existingUser) return token;
 
+      const existingAccount = await accountSvc.accountByUserId(existingUser.id);
+
+      token.isOAuth = !!existingAccount;
       token.role = existingUser.role;
       token.name = existingUser.name;
       token.email = existingUser.email;
@@ -61,6 +65,7 @@ export const {
       if (session.user) {
         session.user.name = token.name as string;
         session.user.email = token.email as string;
+        session.user.isOAuth = token.isOAuth as boolean;
       }
       return session;
     },
